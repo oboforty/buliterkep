@@ -2,3 +2,5 @@ _junk/
 _junk_ops/
 
 webproto/dist/
+
+.idea/
