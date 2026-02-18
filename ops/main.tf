@@ -33,3 +33,6 @@ variable "cloudfront_max_ttl" {
   default     = 31536000
   description = "The maximum TTL for the cloudfront cache"
 }
+
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}

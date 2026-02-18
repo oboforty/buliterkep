@@ -5,12 +5,14 @@ import uuid
 import boto3
 from botocore.exceptions import ClientError
 
+from parse_time import parse_time_en
 
 # Required keys for event validation
 REQUIRED_KEYS = {'event_by', 'title', 'time', 'about1', 'loc1'}
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table("MalterEventPush")
+
 
 
 def push_event(event):
@@ -25,6 +27,8 @@ def handler(event, context):
 	Returns 400 if input format is invalid.
 	Processes valid events and inserts them into DynamoDB.
 	"""
+	# TODO: HMAC verify caller's identity & payload
+
 	try:
 		if isinstance(event.get('body'), str):
 			body = json.loads(event['body'])
@@ -49,6 +53,19 @@ def handler(event, context):
 			
 			for event_item in valid_events:
 				try:
+					lang = event_item.get("lang", "en-GB")
+					event_item["time_raw"] = event_item.pop("time")
+					event_item["dates"]: list[str] = []
+
+					if lang.startswith("en"):
+						for dt in parse_time_en(event_item["time_raw"]):
+							event_item["dates"].append(str(dt.timestamp()))
+					# elif lang.startswith("hu"):
+					# 	event_item["time"] = parse_time_hu(event_item["time"]))
+					else:
+						# TODO: log error?
+						pass
+
 					table.put_item(Item=event_item)
 					inserted_count += 1
 				except ClientError as e:
@@ -145,3 +162,4 @@ def handler(event, context):
 				'details': str(e)
 			})
 		}
+
