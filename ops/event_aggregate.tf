@@ -61,16 +61,6 @@ data "aws_iam_policy_document" "mapp_aggregator_lambda_policy_document" {
   }
 }
 
-resource "aws_iam_policy" "mapp_aggregator_lambda_dynamodb" {
-  name   = "mapp_aggregator_lambda_dynamodb_put"
-  policy = data.aws_iam_policy_document.mapp_aggregator_lambda_policy_document.json
-}
-
-resource "aws_iam_role_policy_attachment" "mapp_aggregator_lambda_dynamodb" {
-  role       = aws_iam_role.mapp_aggregator_lambda_role.name
-  policy_arn = aws_iam_policy.mapp_aggregator_lambda_dynamodb.arn
-}
-
 ##
 ## Lambda Event Pusher
 ##
@@ -117,13 +107,24 @@ resource "aws_lambda_function_url" "mapp_aggregator_url" {
 ## 
 ## Cloudfront invalidation
 ## 
-resource "aws_iam_policy" "mapp_cf_policy" {
-  name        = "MappCFInvalidatePolicy"
-  description = "Enables Mapp lambda to invalidate JSON data"
-  policy      = data.aws_iam_policy_document.mapp_aggregator_lambda_policy_document.json
+
+resource "aws_iam_policy" "mapp_aggregator_lambda_dynamodb" {
+  name   = "mapp_aggregator_lambda_dynamodb_put"
+  policy = data.aws_iam_policy_document.mapp_aggregator_lambda_policy_document.json
 }
 
-resource "aws_iam_role_policy_attachment" "mapp_lambda_policy2" {
+resource "aws_iam_role_policy_attachment" "mapp_aggregator_lambda_dynamodb" {
   role       = aws_iam_role.mapp_aggregator_lambda_role.name
-  policy_arn = aws_iam_policy.mapp_cf_policy.arn
+  policy_arn = aws_iam_policy.mapp_aggregator_lambda_dynamodb.arn
 }
+
+# resource "aws_iam_policy" "mapp_cf_policy" {
+#   name        = "MappCFInvalidatePolicy"
+#   description = "Enables Mapp lambda to invalidate JSON data"
+#   policy      = data.aws_iam_policy_document.mapp_aggregator_lambda_policy_document.json
+# }
+
+# resource "aws_iam_role_policy_attachment" "mapp_lambda_policy2" {
+#   role       = aws_iam_role.mapp_aggregator_lambda_role.name
+#   policy_arn = aws_iam_policy.mapp_cf_policy.arn
+# }

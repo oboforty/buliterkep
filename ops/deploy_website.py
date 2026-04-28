@@ -9,7 +9,7 @@ import boto3
 S3_BUCKET = 'buliterkep-website'
 DISTRIBUTION_ID = 'E3TYHQ53GZ5HQS'
 
-ROOT_DIR = '../'
+ROOT_DIR = '../webproto'
 STATIC_DIR = f'{ROOT_DIR}/static/public'
 SRC_DIR = f'{ROOT_DIR}/src'
 DIST_DIR = f'{ROOT_DIR}/dist'
@@ -18,15 +18,20 @@ s3_client = boto3.client('s3')
 cf_client = boto3.client('cloudfront')
 
 
-def upload_directory_to_s3(local_directory, bucket_name, s3_prefix=''):
+def upload_directory_to_s3(local_directory, bucket_name, s3_prefix='', ignore=None):
+    if ignore is not None:
+        ignore = []
+    ignore = set(ignore)
+
     for root, dirs, files in os.walk(local_directory):
         for filename in files:
-            if 'data/' in filename:
-                continue
-
             local_path = os.path.join(root, filename)
             relative_path = os.path.relpath(local_path, local_directory)
             s3_path = os.path.join(s3_prefix, relative_path).replace("\\", "/")
+
+            if s3_path in ignore:
+                print("Ignoring ", s3_path)
+                continue
 
             file, _ext = os.path.splitext(filename)
             s3_client.upload_file(
@@ -46,7 +51,8 @@ if __name__ == "__main__":
     #appbuilder.render('./static/dist', pretty=False, quoted_printable=True)
 
     # Client - upload bundle to s3
-    upload_directory_to_s3(STATIC_DIR, S3_BUCKET)
+    upload_directory_to_s3(STATIC_DIR, S3_BUCKET, ignore=["data/events.json"])
+
     s3_client.upload_file(
         Filename=f'{DIST_DIR}/index.html',
         Bucket=S3_BUCKET,

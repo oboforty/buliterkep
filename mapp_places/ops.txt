@@ -1,0 +1,10 @@
+
+1) ZIP: 
+	places/example.yaml
+	places/A38.yaml
+	buliterkep.exe
+	aws.json
+
+2) upload zip to S3:
+	dkgs-public/builds/malterplaces.zip
+	eu-central-1; Rajmund AWS

@@ -14,7 +14,7 @@ table = dynamodb.Table("MalterEventPush")
 s3 = boto3.client('s3')
 
 S3_BUCKET = os.environ.get("S3_BUCKET")
-S3_KEY = "events.json"
+S3_KEY = "data/events.json"
 
 UPDATE_CLOUDFRONT = bool(os.environ.get('INVALIDATE', True))
 
@@ -31,11 +31,15 @@ def download_existing_json() -> list[dict]:
         else:
             raise e
 
+
 def is_recent_event(event: dict) -> bool:
     """
     Returns true if event is held in the future, or was held yesterday.
     the map app will further filter these events based on time, we just want to clear old events from the JSON
     """
+    if "dates" not in event:
+        # legacy Mapp events or bugs could
+        return False
     timestamps = event["dates"]
 
     for timestamp in timestamps:

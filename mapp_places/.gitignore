@@ -1,0 +1,10 @@
+# Go
+*.exe
+
+# AWS
+aws.json
+
+# Mapp places fajlok
+places/*.yaml
+!places/example.yaml
+!places/A38.yaml

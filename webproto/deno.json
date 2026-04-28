@@ -3,6 +3,9 @@
     "serve": "deno run --allow-env --allow-run --allow-net --allow-read --allow-write server.ts"
   },
   "imports": {
-    "@std/assert": "jsr:@std/assert@1"
+    "ol/": "https://esm.sh/ol@10.7.0/"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "dom"]
   }
 }

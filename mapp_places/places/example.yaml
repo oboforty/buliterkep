@@ -1,0 +1,59 @@
+# hashtaggel kezdődő sorok kommentek, akár ki is törölheted őket
+# tetszőleges sorrendbe berakhatod a kulcsokat (: előtti mezők)
+
+# sőt akár rakhatsz bele új információt, új kulcsokkal, 
+# ezeket most ignorálni fogja az app, de később belerakhatunk új infókat
+# egyelőre mindegyik mező kötelező, 
+# üres szöveges mezőt így rakj be:
+#   url: ""
+#   description: ""
+# stb
+
+# ------------------------------
+
+# hely neve
+name: A38
+
+# muszáj | karakterrel kezdődnie! több soros is lehet
+description: |
+  Rajmund apja vontatta le Pestre a Kremsz hajóval még a 2000-es években :3
+  Solymár
+  A szívem rég csak egy Solymár
+  Mért kínzol, Solymár
+
+# ------------------------------
+
+# lehetséges értékek:
+#   bar - kocsma
+#   cpx - komplexum (pl Instant)
+#   fasza - fasza helyek (pl Babicska)
+#   mozi - mozi
+#   ship - hajó (pl A38)
+#   corvin - 
+#   dolphin - 
+#   frog - 
+type: ship
+
+# facebook URL, ha nincs event a térképen, ide visz az Mapp
+url: https://www.facebook.com/a38.hajo/events
+
+# Google mapsen jobb klikk -> a koordinájára kattintva bemásolja
+# jobb klikk a coord: után és paste
+#   FONTOS! a [ ] kapcsos zárójel maradjon
+#   (ha felcseréled a koordinátát, az app kijavítja, mert úgyis Budapesti koordinátát vár)
+coord: [47.4767549952701, 19.062771739253538]
+
+# ------------------------------
+
+# nyitvatartás
+# 3 betűs angol napok kellenek : elé
+# a be nem írt napokba a "default" értékét másolja be
+# másnap hajnali értéket is elfogad
+# 24 órás formátumot adj meg, ne 12 órásat!
+open:
+  thu: 10:00 - 22:30
+  fri: 10:00 - 5:00
+  sat: 10:00 - 5:00
+  sun: 10:00 - 20:00
+
+  default: 10:00 - 22:00

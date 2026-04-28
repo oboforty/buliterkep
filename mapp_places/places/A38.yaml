@@ -1,0 +1,17 @@
+name: A38
+description: |
+    Rajmund apja vontatta le Pestre a Kremsz hajóval még a 2000-es években :3
+    Solymár
+    A szívem rég csak egy Solymár
+    Mért kínzol, Solymár
+url: https://www.facebook.com/a38.hajo/events
+coord:
+    - 47.4767549952701
+    - 19.062771739253538
+type: ship
+open:
+    default: 10:00 - 22:00
+    fri: 10:00 - 5:00
+    sat: 10:00 - 5:00
+    sun: 10:00 - 20:00
+    thu: 10:00 - 22:30
