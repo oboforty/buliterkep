@@ -264,6 +264,7 @@ func resolveBasePath() string {
 
 func main() {
 	basePath := resolveBasePath()
+
 	loadAppConfig(basePath)
 	fmt.Println("Malter Places. Directory: ", cfg.FilesRoot)
 

@@ -1,60 +1,49 @@
-import VectorLayer from "https://esm.sh/ol@10.7.0/layer/Vector.js";
-import VectorSource from "https://esm.sh/ol@10.7.0/source/Vector.js";
+import VectorLayer from "ol/layer/Vector.js";
+import VectorSource from "ol/source/Vector.js";
 
-import Feature from 'https://esm.sh/ol@10.7.0/Feature.js';
-import Point from 'https://esm.sh/ol@10.7.0/geom/Point.js';
+import Feature from 'ol/Feature.js';
+import Point from 'ol/geom/Point.js';
 
 import { imgStyle, textStyle } from "./layerstyles.ts";
 import { fromLonLat } from "ol/proj";
 import { DEBUG } from "./scenes/core.ts";
+import Style from "ol/style/Style.d.ts";
 
-type DayOfTheWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
-
-type Place = {
-  name: string;
-  description: string;
-  url: string;
-  coord: number[];
-  type: FeatType;
-  open: {
-    [day in DayOfTheWeek]: string
-  };
-};
+import {eventsStyle, eventsLoad, parseEvent} from "./events.ts";
 
 
-export function placeStyle(feature: Feature) {
-  const name: string = feature.get("name") ?? "????";
-  const icon: string = feature.get("type") ?? "bar";
-
+export function placeStyle(place: Place): Style[] {
   return [
-    imgStyle(icon, 0.1),
-    textStyle(name, {x: 0, y: 24})
+    imgStyle(place.type, 0.1),
+    textStyle(place.name, {x: 0, y: 24})
   ];
 }
 
 export const placesLayer = new VectorLayer({
   source: new VectorSource(),
-  style: placeStyle,
+  // @ts-ignore asd
+  style: (feature: Feature) => {
+    const place = feature.getProperties() as Place;
+
+    const events: PlaceEvent[] = feature.get("events") ?? [];
+    if (events.length > 0)
+      return eventsStyle(events, place);
+    return placeStyle(place);
+  },
   visible: !DEBUG.hide.has("places"),
 });
 
 
-fetch('/data/places.json')
-.then(response => {
+export const placesLoad: Promise<Record<string, string>> = fetch('/data/places.json').then(response => {
   if (!response.ok) {
     throw new Error('places.json: network response was nok');
   }
   return response.json();
-})
-.then(places => {
-  // merge places and places
-  console.log("@@ Loaded places:", places, "places:", places.features);
-
-  // @TODO: resolve on both places & events
-
+}).then((places: Place[]) => {
   const src = placesLayer.getSource();
+  const placesMap: Record<string, string> = {}
 
-  places.map((place: Place) => {
+  for (const place of places) {
     let coord = place.coord;
     // if server didn't catch it, correct (lat,lon) input (e.g. gmaps)
     if (coord[0] > coord[1]) coord = [place.coord[1], place.coord[0]]
@@ -63,13 +52,41 @@ fetch('/data/places.json')
 
     const feature = new Feature({geometry: new Point(fromLonLat(coord))});
     feature.setId(uniqueId(place.name));
-    feature.setProperties({...place});
+    feature.setProperties({
+      ...place,
+      events: []
+    });
 
     src?.addFeature(feature);
-    console.info("Loaded place ", place)
-  });
+    placesMap[place.name] = feature.getId() as string;
+    console.log(feature.getProperties())
+  };
 
+  // console.info("Loaded places")
+  return placesMap;
 });
+
+
+Promise.all([placesLoad, eventsLoad]).then(([featureIds, events])=>{
+  const src = placesLayer.getSource();
+
+  for (const event of events) {
+    const id = featureIds[event.loc1] || featureIds[event.loc2];
+    if (!id) {
+      console.warn("No found place for event: ", event.title, event.loc1, event.loc2, "--");
+      return;
+    }
+    const feature = src?.getFeatureById(id);
+    if (!feature) {
+      console.warn("No found place for event: ", event.title, id, "--", event);
+      return;
+    }
+
+    parseEvent(event);
+    feature.get("events").push(event);
+  }
+});
+
 
 
 // @TODO: move?

@@ -14,7 +14,7 @@ const styleCache: {[ftype: string]: Style | Style[]} = {};
 export function cachedStyle(type: string, hash: string, createStyle: () => Style | Style[]){
   hash = type + "#" + hash;
   if (!styleCache[hash]) {
-      styleCache[hash] = createStyle();
+    styleCache[hash] = createStyle();
   }
   return styleCache[hash];
 }
@@ -47,3 +47,11 @@ export function imgStyle(icon: string, scale: number): Style {
 
   return stylo;
 }
+
+export const debugStyle = new Style({
+  image: new CircleStyle({
+    radius: 7,
+    fill: new Fill({ color: "rgba(255,255,255,0.9)" }),
+    stroke: new Stroke({ color: "#333", width: 3 }),
+  })
+});
