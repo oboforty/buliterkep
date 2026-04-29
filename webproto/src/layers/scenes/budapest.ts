@@ -1,5 +1,4 @@
 import TileLayer from "ol/layer/Tile.js";
-import TileImageSource from "ol/source/TileImage.js";
 import OSM from "ol/source/OSM.js";
 
 import View from "ol/View.js";
@@ -7,7 +6,7 @@ import View from "ol/View.js";
 import Layer from "ol/layer/Layer.d.ts";
 
 import { fromLonLat } from "ol/proj.js";
-import { DEBUG } from "./core.ts";
+import { DEBUG } from "../core.ts";
 
 
 export const baseLayers: { [key: string]: Layer } = {

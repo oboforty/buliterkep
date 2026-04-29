@@ -2,8 +2,10 @@
 type FeatType = "bar" | "mozi" | "cpx" | "fasza" | "ship" | "frog" | "dolphin" | "corvin";
 
 
-
-type DayOfTheWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+type DayOfTheWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun" | "default";
+type OpenHours = {
+	[day in DayOfTheWeek]: string;
+};
 
 type Place = {
   name: string;
@@ -14,7 +16,8 @@ type Place = {
   open: {
 	[day in DayOfTheWeek]: string
   };
-  events: PlaceEvent[]
+  is_open: boolean;
+  events: PlaceEvent[];
 };
 
 type PlaceEvent = {

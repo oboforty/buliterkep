@@ -3,9 +3,14 @@
     "serve": "deno run --allow-env --allow-run --allow-net --allow-read --allow-write server.ts"
   },
   "imports": {
-    "ol/": "https://esm.sh/ol@10.7.0/"
+    "ol/": "https://esm.sh/ol@10.7.0/",
+    "preact": "https://esm.sh/preact@10.29.1",
+    "preact/": "https://esm.sh/preact@10.29.1/"
   },
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+
     "lib": ["deno.window", "dom"]
   }
 }
